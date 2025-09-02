@@ -1,0 +1,671 @@
+{
+  "name": "Whatsapp Message Followup",
+  "nodes": [
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://wasenderapi.com/api/send-message",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "to",
+              "value": "={{ $json['Phone Numbers'] }}"
+            },
+            {
+              "name": "text",
+              "value": "=Hi {{ $json['Full Name'] }}! \nThanks for your BMW service request. Ready to book? \n\n🔧 Bring your car: https://calendly.com/bimmerplacellc/30min\n📞 Speak with specialist: https://calendly.com/bimmerplacellc/new-meeting\n\nQuestions? Reply STOP to opt out.\n"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1088,
+        -560
+      ],
+      "id": "a61449eb-cea1-4cc9-8ca4-3b060d81f9c1",
+      "name": "Send welcome message Wapp1",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "zeTuHux6kzvYvB5d",
+          "name": "Bimmer Whatsapp Business"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://wasenderapi.com/api/send-message",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "to",
+              "value": "={{ $json['Phone Numbers'] }}"
+            },
+            {
+              "name": "text",
+              "value": "=Hi {{ $('When Executed by Another Workflow').item.json['Full Name'] }},\nBMW service questions? We offer transparent pricing, quick turnaround & certified specialists. \nReady to book? \nhttps://calendly.com/bimmerplacellc/30min \nReply STOP to opt out."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        704,
+        -560
+      ],
+      "id": "bdfe1a6c-d492-491a-b429-fe671ce72f5b",
+      "name": "Send Follow-up 2 wapp1",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "zeTuHux6kzvYvB5d",
+          "name": "Bimmer Whatsapp Business"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://wasenderapi.com/api/send-message",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "to",
+              "value": "={{ $json['Phone Numbers'] }}"
+            },
+            {
+              "name": "text",
+              "value": "=Hi {{ $('When Executed by Another Workflow').item.json['Full Name'] }}, following up on your BMW service request. \nReady to book? \n🔧 Service: https://calendly.com/bimmerplacellc/30min\n📞 Consultation: https://calendly.com/bimmerplacellc/new-meeting\nQuestions? Call (954) 708-5073. Reply STOP to opt out.\n"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -192,
+        -560
+      ],
+      "id": "23d1c000-9465-4683-b07b-70be09f01916",
+      "name": "Send Follow-up 1 wapp1",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "zeTuHux6kzvYvB5d",
+          "name": "Bimmer Whatsapp Business"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://wasenderapi.com/api/send-message",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "to",
+              "value": "={{ $json['Phone Numbers'] }}"
+            },
+            {
+              "name": "text",
+              "value": "=Hi {{ $('When Executed by Another Workflow').item.json['Full Name'] }}, \nlast follow-up on your BMW service. \nIf you change your mind: https://calendly.com/bimmerplacellc/30min\nOtherwise, you'll just get helpful BMW tips going forward.\nReply STOP to opt out."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1600,
+        -560
+      ],
+      "id": "f1651563-caf0-489d-91da-2b824c69ca37",
+      "name": "Send Follow-up final ",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "zeTuHux6kzvYvB5d",
+          "name": "Bimmer Whatsapp Business"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "unit": "days"
+      },
+      "id": "5db472d3-c81f-4fef-80c1-774459ed3beb",
+      "name": "Wait 1 Day2",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1,
+      "position": [
+        -864,
+        -560
+      ],
+      "webhookId": "36e8d275-65ed-4dfa-9e68-82a94a544ade"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1__bhgO_RjJuhAY2buy9zWEaclpjUKyedRXNjTEISYE8",
+          "mode": "list",
+          "cachedResultName": "Bimmer Palace Data",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1__bhgO_RjJuhAY2buy9zWEaclpjUKyedRXNjTEISYE8/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Fillout Form Leads",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1__bhgO_RjJuhAY2buy9zWEaclpjUKyedRXNjTEISYE8/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Phone Numbers",
+              "lookupValue": "={{ $('When Executed by Another Workflow').item.json['Phone Numbers'] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "8bdf7d32-c9f3-400e-b713-f5d85e5766c0",
+      "name": "Check Replied Status 6",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        -640,
+        -560
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "DQKrWeLKwLS7syQo",
+          "name": "Bimmer Google Sheet"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "replied-check-1",
+              "leftValue": "={{ $json.Replied }}",
+              "rightValue": "YES",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "a7ff5ed7-370e-4070-9ae1-bc817c6a1ded",
+      "name": "If Not Replied 6",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -416,
+        -560
+      ]
+    },
+    {
+      "parameters": {
+        "unit": "days"
+      },
+      "id": "090fc87e-2011-4f73-8371-9e705fbae524",
+      "name": "Wait 2 Days2",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1,
+      "position": [
+        32,
+        -560
+      ],
+      "webhookId": "13a52a07-0d0c-4c3e-af93-ee160adc43b8"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1__bhgO_RjJuhAY2buy9zWEaclpjUKyedRXNjTEISYE8",
+          "mode": "list",
+          "cachedResultName": "Bimmer Palace Data",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1__bhgO_RjJuhAY2buy9zWEaclpjUKyedRXNjTEISYE8/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Fillout Form Leads",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1__bhgO_RjJuhAY2buy9zWEaclpjUKyedRXNjTEISYE8/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Phone Numbers",
+              "lookupValue": "={{ $('When Executed by Another Workflow').item.json['Phone Numbers'] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "0e1e0f42-4a96-4f6e-aa08-3ef6361c737a",
+      "name": "Check Replied Status 7",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        256,
+        -560
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "DQKrWeLKwLS7syQo",
+          "name": "Bimmer Google Sheet"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "replied-check-2",
+              "leftValue": "={{ $json.Replied }}",
+              "rightValue": "YES",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "b9522088-c7d6-4184-9be5-f937f942748f",
+      "name": "If Not Replied 7",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        480,
+        -560
+      ]
+    },
+    {
+      "parameters": {
+        "unit": "days"
+      },
+      "id": "46a3dde8-ed22-410f-83b5-7da8a801f560",
+      "name": "Wait 3 Days2",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1,
+      "position": [
+        928,
+        -560
+      ],
+      "webhookId": "22b9fdc9-ceb1-45fc-b6a2-d87a4034c37a"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1__bhgO_RjJuhAY2buy9zWEaclpjUKyedRXNjTEISYE8",
+          "mode": "list",
+          "cachedResultName": "Bimmer Palace Data",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1__bhgO_RjJuhAY2buy9zWEaclpjUKyedRXNjTEISYE8/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Fillout Form Leads",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1__bhgO_RjJuhAY2buy9zWEaclpjUKyedRXNjTEISYE8/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Phone Numbers",
+              "lookupValue": "={{ $('When Executed by Another Workflow').item.json['Phone Numbers'] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "3b930819-66f1-4dc2-a660-85440803a659",
+      "name": "Check Replied Status 8",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        1152,
+        -560
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "DQKrWeLKwLS7syQo",
+          "name": "Bimmer Google Sheet"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "replied-check-3",
+              "leftValue": "={{ $json.Replied }}",
+              "rightValue": "YES",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "3ada9cf4-621d-4325-aa9e-f3f90ff78da0",
+      "name": "If Not Replied 8",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1376,
+        -560
+      ]
+    },
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "Phone Numbers",
+              "type": "any"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -1312,
+        -560
+      ],
+      "id": "a81307b4-a2c8-41db-846a-4ca10206d60a",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "content": "### Wwhatsapp message follow ups \n",
+        "height": 880,
+        "width": 4224
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -2096,
+        -992
+      ],
+      "id": "cb3437b7-1c93-4520-9cd6-d12dffd662fa",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "Workflow 3: WhatsApp Follow-up Sequence\nPurpose: 4-message WhatsApp campaign parallel to email sequence\nWhatsApp Sequence:\n\nWelcome Message (Immediate): Brief intro + booking links\nFollow-up #1 (Day 2): Service reminder with phone number\nFollow-up #2 (Day 5): Benefits-focused message\nFinal Message (Day 8): Last chance with opt-out respect\n\nFeatures:\n\nShorter, mobile-optimized messages\nIncludes STOP opt-out in every message\nPhone number verification before sending\nSame reply-checking logic as email workflow",
+        "height": 336,
+        "width": 480,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1840,
+        -720
+      ],
+      "id": "af5b890e-7690-486e-9bd5-7b39999ac5c0",
+      "name": "Sticky Note"
+    }
+  ],
+  "pinData": {
+    "When Executed by Another Workflow": [
+      {
+        "json": {
+          "Email": "lipox@mailinator.com",
+          "Full Name": "Genevieve Pratt",
+          "Phone Numbers": "+923342723511",
+          "Model And Year": "1971",
+          "How Soon do you need service": "",
+          "Service": "Nostrum veritatis in",
+          "Timestamp": "2025-08-05T23:08:26.898Z"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Send welcome message Wapp1": {
+      "main": [
+        [
+          {
+            "node": "Wait 1 Day2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Follow-up 2 wapp1": {
+      "main": [
+        [
+          {
+            "node": "Wait 3 Days2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Follow-up 1 wapp1": {
+      "main": [
+        [
+          {
+            "node": "Wait 2 Days2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait 1 Day2": {
+      "main": [
+        [
+          {
+            "node": "Check Replied Status 6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Replied Status 6": {
+      "main": [
+        [
+          {
+            "node": "If Not Replied 6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If Not Replied 6": {
+      "main": [
+        [
+          {
+            "node": "Send Follow-up 1 wapp1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait 2 Days2": {
+      "main": [
+        [
+          {
+            "node": "Check Replied Status 7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Replied Status 7": {
+      "main": [
+        [
+          {
+            "node": "If Not Replied 7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If Not Replied 7": {
+      "main": [
+        [
+          {
+            "node": "Send Follow-up 2 wapp1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait 3 Days2": {
+      "main": [
+        [
+          {
+            "node": "Check Replied Status 8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Replied Status 8": {
+      "main": [
+        [
+          {
+            "node": "If Not Replied 8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If Not Replied 8": {
+      "main": [
+        [
+          {
+            "node": "Send Follow-up final ",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Send welcome message Wapp1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "2e2c43bd-d35c-4e9f-84de-65dad69c6ce0",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "fb8b211dfa388d0801350a6c5b17c205d694932f4fa50fa723c269df3e6279eb"
+  },
+  "id": "zIcIL9i8EZobmIfq",
+  "tags": []
+}

@@ -1,0 +1,383 @@
+{
+  "name": "Anthony Meeting Bot",
+  "nodes": [
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.message.text }}",
+              "operation": "contains",
+              "value2": ","
+            }
+          ]
+        }
+      },
+      "id": "eab7e8c5-b15a-4319-96ad-aeadfbeb7324",
+      "name": "Check Meeting Data Format1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -528,
+        1952
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "// Extract meeting information from Telegram message\nconst message = $input.first().json.message.text;\nconst chatId = $input.first().json.message.chat.id;\nconst userId = $input.first().json.message.from.id;\n\n// Split by comma and clean up each field\nconst fields = message.split(',').map(field => field.trim());\n\n// Generate unique meeting ID for Google Meet\nconst meetingId = `meet-${chatId}-${Date.now()}`;\nconst requestId = `req-${chatId}-${Date.now()}`;\n\n// Expected format: title, email, date, time\nconst meetingData = {\n  telegram_chat_id: chatId,\n  telegram_user_id: userId,\n  submitted_at: new Date().toISOString(),\n  meeting_id: meetingId,\n  request_id: requestId,\n  title: fields[0] || '',\n  email: fields[1] || '',\n  date: fields[2] || '',\n  time: fields[3] || ''\n};\n\n// Validate required fields\nif (!meetingData.title) {\n  return [{\n    json: {\n      error: true,\n      message: 'Meeting title is required. Please use format: Title, Email, Date, Time'\n    }\n  }];\n}\n\nif (!meetingData.email) {\n  return [{\n    json: {\n      error: true,\n      message: 'Email is required. Please use format: Title, Email, Date, Time'\n    }\n  }];\n}\n\n// Email validation\nconst emailRegex = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/;\nif (!emailRegex.test(meetingData.email)) {\n  return [{\n    json: {\n      error: true,\n      message: 'Please provide a valid email address. Format: Title, Email, Date, Time'\n    }\n  }];\n}\n\n// Date validation (YYYY-MM-DD format)\nconst dateRegex = /^\\d{4}-\\d{2}-\\d{2}$/;\nif (!meetingData.date || !dateRegex.test(meetingData.date)) {\n  return [{\n    json: {\n      error: true,\n      message: 'Please use date format: YYYY-MM-DD (e.g., 2025-01-30)'\n    }\n  }];\n}\n\n// Time validation and conversion\nif (!meetingData.time) {\n  return [{\n    json: {\n      error: true,\n      message: 'Time is required. Format: HH:MM AM/PM (e.g., 2:00 PM)'\n    }\n  }];\n}\n\n// Convert time to 24-hour format for calendar\nfunction convertTo24Hour(time12h) {\n  const [time, modifier] = time12h.split(' ');\n  let [hours, minutes] = time.split(':');\n  if (hours === '12') {\n    hours = '00';\n  }\n  if (modifier === 'PM') {\n    hours = parseInt(hours, 10) + 12;\n  }\n  return `${hours.toString().padStart(2, '0')}:${minutes}`;\n}\n\ntry {\n  meetingData.time24 = convertTo24Hour(meetingData.time);\n  meetingData.startDateTime = `${meetingData.date}T${meetingData.time24}:00`;\n  \n  // Calculate end time (1 hour later)\n  const startDate = new Date(meetingData.startDateTime);\n  const endDate = new Date(startDate.getTime() + 60 * 60 * 1000);\n  meetingData.endDateTime = endDate.toISOString().slice(0, 19);\n  \n  // Add enhanced description for calendar\n  meetingData.fullDescription = `${meetingData.title}\\n\\nJoin via Google Meet (link will be generated automatically)\\n\\nMeeting ID: ${meetingId}\\nDuration: 1 hour\\n\\nThis meeting was scheduled via Anthony's Meeting Bot.`;\n  \n} catch (error) {\n  return [{\n    json: {\n      error: true,\n      message: 'Invalid time format. Please use HH:MM AM/PM (e.g., 2:00 PM)'\n    }\n  }];\n}\n\nreturn [{\n  json: meetingData\n}];"
+      },
+      "id": "e0abb56c-e446-4d81-8318-830e2f1b8bb6",
+      "name": "Parse Meeting Data1",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        64,
+        1760
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json.error }}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "fafc3055-9842-4791-967f-de1338e16c31",
+      "name": "Check Meeting Validation Error1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        416,
+        1968
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.telegram_chat_id }}",
+        "text": "❌ {{ $json.message }}\n\nPlease try again with the correct format.",
+        "additionalFields": {}
+      },
+      "id": "340db3d6-4bfe-46f2-ac66-8b5b421551d2",
+      "name": "Send Meeting Error1",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [
+        688,
+        1840
+      ],
+      "webhookId": "2ff0a3fa-5568-4d12-850c-89ab372e22bd",
+      "credentials": {
+        "telegramApi": {
+          "id": "cq4vHhCtplDkpYOG",
+          "name": "Telegram Meeting Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "calendar": {
+          "__rl": true,
+          "value": "info@allistarmedia.io",
+          "mode": "list",
+          "cachedResultName": "info@allistarmedia.io"
+        },
+        "start": "={{ $json.startDateTime }}",
+        "end": "={{ $json.endDateTime }}",
+        "additionalFields": {
+          "attendees": [
+            "={{ $json.email }}"
+          ],
+          "conferenceDataUi": {
+            "conferenceDataValues": {
+              "conferenceSolution": "hangoutsMeet"
+            }
+          },
+          "summary": "={{ $json.title }}"
+        }
+      },
+      "id": "ce215abe-6e00-4f40-9b50-9c0b8ee21302",
+      "name": "Create Calendar Event1",
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [
+        608,
+        2064
+      ],
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "bTt24XEDB5VaivYt",
+          "name": "google calendar anthony acc"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Parse Meeting Data1').item.json.email }}",
+        "subject": "Meeting Invitation: {{ $('Parse Meeting Data').item.json.title }}",
+        "message": "=<!DOCTYPE html>\n<html>\n<head>\n    <meta charset=\"utf-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Meeting Invitation</title>\n    <style>\n        body {\n            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;\n            line-height: 1.5;\n            color: #333;\n            max-width: 500px;\n            margin: 0 auto;\n            padding: 20px;\n            background: #f9f9f9;\n        }\n        .container {\n            background: white;\n            border-radius: 8px;\n            padding: 24px;\n            box-shadow: 0 2px 4px rgba(0,0,0,0.1);\n        }\n        .header {\n            border-bottom: 1px solid #eee;\n            padding-bottom: 16px;\n            margin-bottom: 20px;\n        }\n        .meeting-title {\n            font-size: 18px;\n            font-weight: 600;\n            color: #1a73e8;\n            margin: 0;\n        }\n        .detail {\n            margin: 8px 0;\n            font-size: 14px;\n        }\n        .link {\n            color: #1a73e8;\n            text-decoration: none;\n            font-weight: 500;\n        }\n        .link:hover {\n            text-decoration: underline;\n        }\n        .footer {\n            margin-top: 24px;\n            padding-top: 16px;\n            border-top: 1px solid #eee;\n            font-size: 12px;\n            color: #666;\n        }\n        .btn {\n            display: inline-block;\n            background: #1a73e8;\n            color: white;\n            padding: 10px 20px;\n            border-radius: 4px;\n            text-decoration: none;\n            margin: 12px 0;\n            font-weight: 500;\n        }\n    </style>\n</head>\n<body>\n    <div class=\"container\">\n        <div class=\"header\">\n            <h2 class=\"meeting-title\">{{ $json.summary }}</h2>\n        </div>\n        \n        <div class=\"detail\"><strong>📅 Date:</strong> {{ $json.start.dateTime }}</div>\n        <div class=\"detail\"><strong>⏱️ Duration:</strong> 1 hour</div>\n        <div class=\"detail\"><strong>📍 Location:</strong> Google Meet</div>\n        \n        <a href=\"{{ $json.hangoutLink }}\" class=\"btn\">Join Meeting</a>\n        \n        <div class=\"detail\">\n            <strong>📅 Add to Calendar:</strong> \n            <a href=\"{{ $json.htmlLink }}\" class=\"link\">View Event</a>\n        </div>\n        \n        <div class=\"footer\">\n            <p>Best regards,<br><strong>Anthony</strong></p>\n            <p style=\"margin-top: 16px; font-size: 11px;\">\n                This is an automated message from Anthony's Meeting Bot.\n            </p>\n        </div>\n    </div>\n</body>\n</html>",
+        "options": {
+          "bccList": "",
+          "ccList": "",
+          "replyTo": "abdullah.agentum@gmail.com"
+        }
+      },
+      "id": "efae76fa-b215-4036-be08-432bcfbaebc6",
+      "name": "Send Meeting Email1",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        816,
+        2064
+      ],
+      "webhookId": "9660f913-863e-4812-8e90-3eee278cbd30",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "RTWVr0r7TNERKiLG",
+          "name": "Gmail Anthony"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "=✅ Meeting request received!\n\n**Details:**\n📅 {{ $('Create Calendar Event1').item.json.summary }}\n📧 {{ $('Create Calendar Event1').item.json.attendees[0].email }}\n📆 {{ $('Create Calendar Event1').item.json.start.dateTime }}\n\n📍 Google Meet\n\n🔗 **Meet Link:** {{ $json.hangoutLink || 'Available in calendar' }}\n\n\n✉️ Calendar invite and email confirmation sent!",
+        "additionalFields": {}
+      },
+      "id": "065e4f5e-a7d5-4342-bd58-8578e6c7c266",
+      "name": "Send Meeting Confirmation1",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [
+        1120,
+        2016
+      ],
+      "webhookId": "b43409a0-679f-49d0-b1e6-a777a4be06cb",
+      "credentials": {
+        "telegramApi": {
+          "id": "cq4vHhCtplDkpYOG",
+          "name": "Telegram Meeting Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.message.chat.id }}",
+        "text": "📅 **Meeting Bot Instructions**\n\nPlease use this exact format:\n**Title, Email, Date, Time**\n\n**Example:**\nProduct Demo, john@company.com, 2025-01-30, 2:00 PM\n\n**Format Requirements:**\n• Date: YYYY-MM-DD\n• Time: HH:MM AM/PM\n• Email: valid email address\n\n**Features:**\n✅ Automatic Google Meet link\n✅ Calendar invite sent\n✅ Email confirmation\n✅ 1-hour meeting duration",
+        "additionalFields": {}
+      },
+      "id": "a4b5d33e-a247-430b-8ead-874a42ffd4bd",
+      "name": "Send Meeting Format Help1",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [
+        208,
+        2208
+      ],
+      "webhookId": "dc607116-f31c-4854-be32-2d05dc137eda",
+      "credentials": {
+        "telegramApi": {
+          "id": "cq4vHhCtplDkpYOG",
+          "name": "Telegram Meeting Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "id": "67a9dd07-55c4-4adb-a93d-052bc6dfeed7",
+      "name": "Telegram Trigger",
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1,
+      "position": [
+        -992,
+        1696
+      ],
+      "webhookId": "f07d093c-96ab-45b6-8cb4-fc53dcc2bbe0",
+      "credentials": {
+        "telegramApi": {
+          "id": "cq4vHhCtplDkpYOG",
+          "name": "Telegram Meeting Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.message.text }}",
+              "operation": "startsWith",
+              "value2": "/start"
+            }
+          ]
+        }
+      },
+      "id": "e213304f-ed0a-49bb-9da3-6c54136a68fe",
+      "name": "Check Start Command",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -784,
+        1696
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.message.chat.id }}",
+        "text": "🤖 **Welcome to Anthony's Meeting Bot!**\n\n📅 **How to schedule a meeting:**\nUse this exact format:\n**Title, Email, Date, Time**\n\n**Example:**\nProduct Demo, john@company.com, 2025-01-30, 2:00 PM\n\n**Format Requirements:**\n• Date: YYYY-MM-DD\n• Time: HH:MM AM/PM\n• Email: valid email address\n\n**What you'll get:**\n✅ Google Calendar event with Meet link\n✅ Automatic email invitation\n✅ Confirmation message\n✅ 1-hour meeting duration\n\nJust send your meeting details in the format above! 🚀",
+        "additionalFields": {}
+      },
+      "id": "fc17c90c-a417-4f55-b97e-156588c00e9c",
+      "name": "Send Welcome Message",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [
+        -592,
+        1584
+      ],
+      "webhookId": "2ce28664-124e-4f7d-9254-e55b86442bc6",
+      "credentials": {
+        "telegramApi": {
+          "id": "cq4vHhCtplDkpYOG",
+          "name": "Telegram Meeting Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "Telegram Meeting Scheduler - Brief Documentation\nOverview\nAutomated meeting scheduling bot that creates Google Calendar events with Meet links via Telegram messages.\nFlow Process\nInput Format\nRequired: Title, Email, Date, Time\nExample: Product Demo, john@company.com, 2025-01-30, 2:00 PM\nCore Steps\n\nTelegram Trigger - Receives meeting request messages\nFormat Validation - Checks for comma-separated format\nData Parsing & Validation - Validates email, date (YYYY-MM-DD), time (HH:MM AM/PM)\nGoogle Calendar Event - Creates 1-hour meeting with Meet link on info@allistarmedia.io\nEmail Invitation - Sends professional HTML invite with meeting details\nTelegram Confirmation - Returns meeting details and Meet link\n\nKey Features\n\nAutomatic Google Meet integration\nProfessional email invitations\nRobust validation with specific error messages\n1-hour default duration\nUnique meeting IDs for tracking\n\nError Handling\n\nMissing/invalid fields trigger specific error messages\nFormat help provided for incorrect inputs\nValidation covers email format, date format, and time conversion\n\nIntegration Points\n\nTelegram Bot API\nGoogle Calendar API\nGmail API\nGoogle Meet (auto-generated)\n\nResult: Transforms simple text messages into professional calendar invites with video conferencing in seconds.",
+        "height": 1104,
+        "width": 2944,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1440,
+        1376
+      ],
+      "id": "4103af0f-bdf7-4cbe-80bd-a71511c4dde5",
+      "name": "Sticky Note"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Check Meeting Data Format1": {
+      "main": [
+        [
+          {
+            "node": "Parse Meeting Data1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send Meeting Format Help1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Meeting Data1": {
+      "main": [
+        [
+          {
+            "node": "Check Meeting Validation Error1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Meeting Validation Error1": {
+      "main": [
+        [
+          {
+            "node": "Send Meeting Error1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Create Calendar Event1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Calendar Event1": {
+      "main": [
+        [
+          {
+            "node": "Send Meeting Email1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Meeting Email1": {
+      "main": [
+        [
+          {
+            "node": "Send Meeting Confirmation1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Check Start Command",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Start Command": {
+      "main": [
+        [
+          {
+            "node": "Send Welcome Message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Check Meeting Data Format1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "0ae7cb51-0162-4c55-be5b-980fe592b9a4",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "fb8b211dfa388d0801350a6c5b17c205d694932f4fa50fa723c269df3e6279eb"
+  },
+  "id": "h1NDnPoIVBxPPCe7",
+  "tags": []
+}

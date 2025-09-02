@@ -1,0 +1,593 @@
+{
+  "name": "Email Automation",
+  "nodes": [
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1__bhgO_RjJuhAY2buy9zWEaclpjUKyedRXNjTEISYE8",
+          "mode": "list",
+          "cachedResultName": "Bimmer Palace Data",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1__bhgO_RjJuhAY2buy9zWEaclpjUKyedRXNjTEISYE8/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Fillout Form Leads",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1__bhgO_RjJuhAY2buy9zWEaclpjUKyedRXNjTEISYE8/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Email",
+              "lookupValue": "={{ $('When Executed by Another Workflow').item.json.Email }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "bea84d70-1cde-453f-92de-311d436e5acb",
+      "name": "Check Replied Status ",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        -1536,
+        -32
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "DQKrWeLKwLS7syQo",
+          "name": "Bimmer Google Sheet"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.Email }}",
+        "subject": "=Still need BMW service? We're here to help",
+        "message": "=<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>BMW Service Follow-up - Bimmer Place</title>\n    <style>\n        * {\n            margin: 0;\n            padding: 0;\n            box-sizing: border-box;\n        }\n        \n        body {\n            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;\n            line-height: 1.6;\n            color: #333;\n            background-color: #f4f4f4;\n        }\n        \n        .email-container {\n            max-width: 600px;\n            margin: 20px auto;\n            background: white;\n            border-radius: 12px;\n            overflow: hidden;\n            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);\n        }\n        \n        .header {\n            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);\n            color: white;\n            padding: 30px 25px;\n            text-align: center;\n        }\n        \n        .logo {\n            font-size: 28px;\n            font-weight: bold;\n            margin-bottom: 10px;\n            letter-spacing: 1px;\n        }\n        \n        .tagline {\n            font-size: 14px;\n            opacity: 0.9;\n        }\n        \n        .content {\n            padding: 30px 25px;\n        }\n        \n        .greeting {\n            font-size: 18px;\n            margin-bottom: 20px;\n            color: #2a5298;\n        }\n        \n        .intro {\n            margin-bottom: 20px;\n            font-size: 16px;\n            line-height: 1.7;\n        }\n        \n        .service-mention {\n            background: #f8f9ff;\n            padding: 15px;\n            border-left: 4px solid #2a5298;\n            margin-bottom: 20px;\n            border-radius: 0 8px 8px 0;\n            font-style: italic;\n        }\n        \n        .personal-message {\n            margin-bottom: 25px;\n            font-size: 16px;\n            line-height: 1.7;\n            color: #555;\n        }\n        \n        .cta-section {\n            margin-bottom: 30px;\n        }\n        \n        .cta-title {\n            color: #1e3c72;\n            margin-bottom: 20px;\n            font-size: 18px;\n            font-weight: 600;\n            text-align: center;\n        }\n        \n        .action-buttons {\n            display: flex;\n            gap: 15px;\n            margin-bottom: 25px;\n            flex-wrap: wrap;\n        }\n        \n        .action-item {\n            background: white;\n            border: 2px solid #e8ecf7;\n            border-radius: 10px;\n            padding: 20px;\n            flex: 1;\n            min-width: 250px;\n            text-align: center;\n            transition: all 0.3s ease;\n        }\n        \n        .action-item:hover {\n            border-color: #2a5298;\n            transform: translateY(-2px);\n            box-shadow: 0 4px 15px rgba(42, 82, 152, 0.1);\n        }\n        \n        .action-icon {\n            font-size: 24px;\n            margin-bottom: 10px;\n            display: block;\n        }\n        \n        .action-title {\n            font-weight: bold;\n            color: #1e3c72;\n            margin-bottom: 8px;\n            font-size: 16px;\n        }\n        \n        .action-btn {\n            display: inline-block;\n            background: linear-gradient(135deg, #2a5298 0%, #1e3c72 100%);\n            color: white !important;\n            text-decoration: none;\n            padding: 12px 24px;\n            border-radius: 25px;\n            margin-top: 10px;\n            font-weight: 600;\n            transition: all 0.3s ease;\n            box-shadow: 0 4px 15px rgba(42, 82, 152, 0.3);\n        }\n        \n        .action-btn:hover {\n            color: white !important;\n            transform: translateY(-2px);\n            box-shadow: 0 6px 20px rgba(42, 82, 152, 0.4);\n        }\n        \n        .contact-section {\n            background: #f8f9ff;\n            padding: 20px;\n            border-radius: 10px;\n            text-align: center;\n            margin-bottom: 25px;\n        }\n        \n        .contact-title {\n            color: #1e3c72;\n            font-weight: bold;\n            margin-bottom: 10px;\n            font-size: 16px;\n        }\n        \n        .phone-number {\n            color: #2a5298;\n            font-weight: bold;\n            font-size: 18px;\n        }\n        \n        .signature {\n            margin-top: 20px;\n            font-style: italic;\n            color: #666;\n        }\n        \n        .footer {\n            background: #1e3c72;\n            color: white;\n            text-align: center;\n            padding: 25px;\n            font-size: 14px;\n        }\n        \n        /* Mobile responsiveness */\n        @media (max-width: 600px) {\n            .email-container {\n                margin: 10px;\n                border-radius: 8px;\n            }\n            \n            .header, .content {\n                padding: 20px;\n            }\n            \n            .action-buttons {\n                flex-direction: column;\n            }\n            \n            .action-item {\n                min-width: auto;\n            }\n            \n            .logo {\n                font-size: 24px;\n            }\n        }\n    </style>\n</head>\n<body>\n    <div class=\"email-container\">\n        <!-- Header -->\n        <div class=\"header\">\n            <div class=\"logo\">BIMMER PLACE</div>\n            <div class=\"tagline\">Premium BMW Service & Expertise</div>\n        </div>\n        \n        <!-- Main Content -->\n        <div class=\"content\">\n            <div class=\"greeting\">\n                Hi {{ $json['Full Name'] }},\n            </div>\n            \n            <div class=\"intro\">\n                I wanted to follow up on your BMW service request for <strong>{{ $json.Service }}</strong>.\n            </div>\n            \n            <div class=\"personal-message\">\n                I know choosing the right service provider is important, and I'm here to make the process as easy as possible for you.\n            </div>\n            \n            <div class=\"cta-section\">\n                <div class=\"cta-title\">Ready to move forward?</div>\n                \n                <div class=\"action-buttons\">\n                    <div class=\"action-item\">\n                        <div class=\"action-icon\">🔧</div>\n                        <div class=\"action-title\">Book your service</div>\n                        <a href=\"https://calendly.com/bimmerplacellc/30min\" class=\"action-btn\">Schedule Now</a>\n                    </div>\n                    \n                    <div class=\"action-item\">\n                        <div class=\"action-icon\">📞</div>\n                        <div class=\"action-title\">Speak with specialist</div>\n                        <a href=\"https://calendly.com/bimmerplacellc/new-meeting\" class=\"action-btn\">Book Consultation</a>\n                    </div>\n                </div>\n            </div>\n            \n            <div class=\"contact-section\">\n                <div class=\"contact-title\">Have questions?</div>\n                <div>Just reply to this email l</div>\n              \n            </div>\n            \n            <div class=\"signature\">\n                Best regards,<br>\n                <strong>The Bimmer Place Team</strong>\n            </div>\n        </div>\n        \n        <!-- Footer -->\n        <div class=\"footer\">\n            © 2025 Bimmer Place LLC | Premium BMW Service | Oakland Park, FL\n        </div>\n    </div>\n</body>\n</html>",
+        "options": {}
+      },
+      "id": "34a68edf-b04b-47cb-a445-525acf7b72ab",
+      "name": "Send Follow-up ",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2,
+      "position": [
+        -1088,
+        -32
+      ],
+      "webhookId": "91b2db4d-cf24-4f79-94a8-2df094c93f83",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "AIqiPirsk2ufKXvQ",
+          "name": "Gmail Bimmer Palace"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "unit": "days"
+      },
+      "id": "c747bca1-d691-448e-aebd-d28af3b5f45b",
+      "name": "Wait 2 Days1",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1,
+      "position": [
+        -864,
+        -32
+      ],
+      "webhookId": "13a52a07-0d0c-4c3e-af93-ee160adc43b8"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1__bhgO_RjJuhAY2buy9zWEaclpjUKyedRXNjTEISYE8",
+          "mode": "list",
+          "cachedResultName": "Bimmer Palace Data",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1__bhgO_RjJuhAY2buy9zWEaclpjUKyedRXNjTEISYE8/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Fillout Form Leads",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1__bhgO_RjJuhAY2buy9zWEaclpjUKyedRXNjTEISYE8/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Email",
+              "lookupValue": "={{ $('When Executed by Another Workflow').item.json.Email }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "c4a16231-fc12-44f2-9217-fd13b2f53d93",
+      "name": "Check Replied Status 4",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        -640,
+        -32
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "DQKrWeLKwLS7syQo",
+          "name": "Bimmer Google Sheet"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "replied-check-2",
+              "leftValue": "={{ $json.Replied }}",
+              "rightValue": "YES",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "d80ed57c-447d-4711-bfad-ba4dd1bcfde5",
+      "name": "If Not Replied ",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -416,
+        -32
+      ]
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.Email }}",
+        "subject": "=BMW Service Question - Common Concerns Answered",
+        "message": "=<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>BMW Service FAQ - Bimmer Place</title>\n    <style>\n        * {\n            margin: 0;\n            padding: 0;\n            box-sizing: border-box;\n        }\n        \n        body {\n            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;\n            line-height: 1.6;\n            color: #333;\n            background-color: #f4f4f4;\n        }\n        \n        .email-container {\n            max-width: 600px;\n            margin: 20px auto;\n            background: white;\n            border-radius: 12px;\n            overflow: hidden;\n            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);\n        }\n        \n        .header {\n            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);\n            color: white;\n            padding: 30px 25px;\n            text-align: center;\n        }\n        \n        .logo {\n            font-size: 28px;\n            font-weight: bold;\n            margin-bottom: 10px;\n            letter-spacing: 1px;\n        }\n        \n        .tagline {\n            font-size: 14px;\n            opacity: 0.9;\n        }\n        \n        .content {\n            padding: 30px 25px;\n        }\n        \n        .greeting {\n            font-size: 18px;\n            margin-bottom: 20px;\n            color: #2a5298;\n        }\n        \n        .intro {\n            margin-bottom: 25px;\n            font-size: 16px;\n            line-height: 1.7;\n        }\n        \n        .faq-section {\n            margin-bottom: 30px;\n        }\n        \n        .faq-title {\n            color: #1e3c72;\n            margin-bottom: 20px;\n            font-size: 18px;\n            font-weight: 600;\n            text-align: center;\n        }\n        \n        .faq-item {\n            background: #f8f9ff;\n            border: 1px solid #e8ecf7;\n            border-radius: 10px;\n            padding: 18px;\n            margin-bottom: 12px;\n            transition: all 0.3s ease;\n            border-left: 4px solid #2a5298;\n        }\n        \n        .faq-item:hover {\n            background: #f0f6ff;\n            transform: translateX(5px);\n            box-shadow: 0 4px 15px rgba(42, 82, 152, 0.1);\n        }\n        \n        .faq-icon {\n            font-size: 20px;\n            margin-right: 10px;\n            vertical-align: middle;\n        }\n        \n        .faq-label {\n            font-weight: bold;\n            color: #1e3c72;\n            margin-right: 10px;\n            display: inline;\n        }\n        \n        .faq-answer {\n            color: #555;\n            display: inline;\n            font-size: 15px;\n        }\n        \n        .service-reminder {\n            background: #fff8e1;\n            border: 2px solid #ffc107;\n            border-radius: 10px;\n            padding: 20px;\n            margin-bottom: 25px;\n            text-align: center;\n        }\n        \n        .reminder-title {\n            color: #f57c00;\n            font-weight: bold;\n            margin-bottom: 10px;\n            font-size: 16px;\n        }\n        \n        .service-type {\n            color: #e65100;\n            font-weight: bold;\n            font-size: 18px;\n        }\n        \n        .cta-section {\n            margin-bottom: 30px;\n        }\n        \n        .action-buttons {\n            display: flex;\n            gap: 15px;\n            margin-bottom: 25px;\n            flex-wrap: wrap;\n        }\n        \n        .action-item {\n            background: white;\n            border: 2px solid #e8ecf7;\n            border-radius: 10px;\n            padding: 20px;\n            flex: 1;\n            min-width: 250px;\n            text-align: center;\n            transition: all 0.3s ease;\n        }\n        \n        .action-item:hover {\n            border-color: #2a5298;\n            transform: translateY(-2px);\n            box-shadow: 0 4px 15px rgba(42, 82, 152, 0.1);\n        }\n        \n        .action-icon {\n            font-size: 24px;\n            margin-bottom: 10px;\n            display: block;\n        }\n        \n        .action-title {\n            font-weight: bold;\n            color: #1e3c72;\n            margin-bottom: 8px;\n            font-size: 16px;\n        }\n        \n        .action-btn {\n            display: inline-block;\n            background: linear-gradient(135deg, #2a5298 0%, #1e3c72 100%);\n            color: white !important;\n            text-decoration: none;\n            padding: 12px 24px;\n            border-radius: 25px;\n            margin-top: 10px;\n            font-weight: 600;\n            transition: all 0.3s ease;\n            box-shadow: 0 4px 15px rgba(42, 82, 152, 0.3);\n        }\n        \n        .action-btn:hover {\n            color: white !important;\n            transform: translateY(-2px);\n            box-shadow: 0 6px 20px rgba(42, 82, 152, 0.4);\n        }\n        \n        .contact-section {\n            background: #f8f9ff;\n            padding: 20px;\n            border-radius: 10px;\n            text-align: center;\n            margin-bottom: 25px;\n        }\n        \n        .contact-title {\n            color: #1e3c72;\n            font-weight: bold;\n            margin-bottom: 10px;\n            font-size: 16px;\n        }\n        \n        .signature {\n            margin-top: 20px;\n            font-style: italic;\n            color: #666;\n            text-align: center;\n        }\n        \n        .footer {\n            background: #1e3c72;\n            color: white;\n            text-align: center;\n            padding: 25px;\n            font-size: 14px;\n        }\n        \n        /* Mobile responsiveness */\n        @media (max-width: 600px) {\n            .email-container {\n                margin: 10px;\n                border-radius: 8px;\n            }\n            \n            .header, .content {\n                padding: 20px;\n            }\n            \n            .action-buttons {\n                flex-direction: column;\n            }\n            \n            .action-item {\n                min-width: auto;\n            }\n            \n            .logo {\n                font-size: 24px;\n            }\n            \n            .faq-item {\n                padding: 15px;\n            }\n        }\n    </style>\n</head>\n<body>\n    <div class=\"email-container\">\n        <!-- Header -->\n        <div class=\"header\">\n            <div class=\"logo\">BIMMER PLACE</div>\n            <div class=\"tagline\">Premium BMW Service & Expertise</div>\n        </div>\n        \n        <!-- Main Content -->\n        <div class=\"content\">\n            <div class=\"greeting\">\n                Hi {{ $json['Full Name'] }},\n            </div>\n            \n            <div class=\"intro\">\n                I understand you might have some questions about your BMW service needs. Here are answers to common concerns:\n            </div>\n            \n            <div class=\"faq-section\">\n                <div class=\"faq-item\">\n                    <span class=\"faq-icon\">💰</span>\n                    <span class=\"faq-label\">Pricing:</span>\n                    <span class=\"faq-answer\">We provide transparent, upfront estimates</span>\n                </div>\n                \n                <div class=\"faq-item\">\n                    <span class=\"faq-icon\">⏰</span>\n                    <span class=\"faq-label\">Timeline:</span>\n                    <span class=\"faq-answer\">Most services completed same day or next day</span>\n                </div>\n                \n                <div class=\"faq-item\">\n                    <span class=\"faq-icon\">🔧</span>\n                    <span class=\"faq-label\">Quality:</span>\n                    <span class=\"faq-answer\">Certified BMW specialists with 15 years experience</span>\n                </div>\n                \n                <div class=\"faq-item\">\n                    <span class=\"faq-icon\">📍</span>\n                    <span class=\"faq-label\">Convenience:</span>\n                    <span class=\"faq-answer\">Easy location in Oakland Park</span>\n                </div>\n            </div>\n            \n            <div class=\"service-reminder\">\n                <div class=\"reminder-title\">Still interested in</div>\n                <div class=\"service-type\">{{ $json.Service }}?</div>\n            </div>\n            \n            <div class=\"cta-section\">\n                <div class=\"action-buttons\">\n                    <div class=\"action-item\">\n                        <div class=\"action-icon\">🔧</div>\n                        <div class=\"action-title\">Schedule service</div>\n                        <a href=\"https://calendly.com/bimmerplacellc/30min\" class=\"action-btn\">Book Now</a>\n                    </div>\n                    \n                    <div class=\"action-item\">\n                        <div class=\"action-icon\">📞</div>\n                        <div class=\"action-title\">Free consultation</div>\n                        <a href=\"https://calendly.com/bimmerplacellc/new-meeting\" class=\"action-btn\">Schedule Call</a>\n                    </div>\n                </div>\n            </div>\n            \n            <div class=\"contact-section\">\n                <div class=\"contact-title\">Any specific questions?</div>\n                <div>Just reply to this email and we'll get back to you promptly.</div>\n            </div>\n            \n            <div class=\"signature\">\n                <strong>The Bimmer Place Team</strong>\n            </div>\n        </div>\n        \n        <!-- Footer -->\n        <div class=\"footer\">\n            © 2025 Bimmer Place LLC | Premium BMW Service | Oakland Park, FL\n        </div>\n    </div>\n</body>\n</html>",
+        "options": {}
+      },
+      "id": "ef3ab466-ccd8-4626-aa53-1f0768b28db4",
+      "name": "Send Follow-up 3",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2,
+      "position": [
+        -192,
+        -32
+      ],
+      "webhookId": "7761cf41-c5d2-4d0a-87e9-1dc01c12e3b3",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "AIqiPirsk2ufKXvQ",
+          "name": "Gmail Bimmer Palace"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "unit": "days"
+      },
+      "id": "f0758b55-b6f9-447a-9a62-17cc4f8ae57b",
+      "name": "Wait 3 Days1",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1,
+      "position": [
+        32,
+        -32
+      ],
+      "webhookId": "22b9fdc9-ceb1-45fc-b6a2-d87a4034c37a"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1__bhgO_RjJuhAY2buy9zWEaclpjUKyedRXNjTEISYE8",
+          "mode": "list",
+          "cachedResultName": "Bimmer Palace Data",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1__bhgO_RjJuhAY2buy9zWEaclpjUKyedRXNjTEISYE8/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Fillout Form Leads",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1__bhgO_RjJuhAY2buy9zWEaclpjUKyedRXNjTEISYE8/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Email",
+              "lookupValue": "={{ $('When Executed by Another Workflow').item.json.Email }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "25c549fa-6c23-4f58-b1eb-1301c99d9507",
+      "name": "Check Replied Status 5",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        256,
+        -32
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "DQKrWeLKwLS7syQo",
+          "name": "Bimmer Google Sheet"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "replied-check-3",
+              "leftValue": "={{ $json.Replied }}",
+              "rightValue": "YES",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "cc2746e3-045d-4519-96be-df490bb38112",
+      "name": "If Not Replied 4",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        480,
+        -32
+      ]
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.Email }}",
+        "subject": "=Last check-in about your BMW service",
+        "message": "=<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Final Follow-up - Bimmer Place</title>\n    <style>\n        * {\n            margin: 0;\n            padding: 0;\n            box-sizing: border-box;\n        }\n        \n        body {\n            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;\n            line-height: 1.6;\n            color: #333;\n            background-color: #f4f4f4;\n        }\n        \n        .email-container {\n            max-width: 600px;\n            margin: 20px auto;\n            background: white;\n            border-radius: 12px;\n            overflow: hidden;\n            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);\n        }\n        \n        .header {\n            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);\n            color: white;\n            padding: 30px 25px;\n            text-align: center;\n        }\n        \n        .logo {\n            font-size: 28px;\n            font-weight: bold;\n            margin-bottom: 10px;\n            letter-spacing: 1px;\n        }\n        \n        .tagline {\n            font-size: 14px;\n            opacity: 0.9;\n        }\n        \n        .content {\n            padding: 30px 25px;\n        }\n        \n        .greeting {\n            font-size: 18px;\n            margin-bottom: 20px;\n            color: #2a5298;\n        }\n        \n        .intro {\n            margin-bottom: 25px;\n            font-size: 16px;\n            line-height: 1.7;\n            color: #555;\n        }\n        \n        .final-message {\n            background: #fff3e0;\n            border-left: 4px solid #ff9800;\n            padding: 20px;\n            margin-bottom: 25px;\n            border-radius: 0 8px 8px 0;\n            font-style: italic;\n            color: #e65100;\n        }\n        \n        .still-interested {\n            margin-bottom: 25px;\n            text-align: center;\n        }\n        \n        .interested-title {\n            color: #1e3c72;\n            font-weight: 600;\n            margin-bottom: 15px;\n            font-size: 16px;\n        }\n        \n        .action-buttons {\n            display: flex;\n            gap: 15px;\n            justify-content: center;\n            flex-wrap: wrap;\n        }\n        \n        .action-item {\n            background: white;\n            border: 2px solid #e8ecf7;\n            border-radius: 10px;\n            padding: 18px 25px;\n            text-align: center;\n            transition: all 0.3s ease;\n            min-width: 200px;\n        }\n        \n        .action-item:hover {\n            border-color: #2a5298;\n            transform: translateY(-2px);\n            box-shadow: 0 4px 15px rgba(42, 82, 152, 0.1);\n        }\n        \n        .action-icon {\n            font-size: 20px;\n            margin-right: 8px;\n            vertical-align: middle;\n        }\n        \n        .action-btn {\n            display: inline-block;\n            background: linear-gradient(135deg, #2a5298 0%, #1e3c72 100%);\n            color: white !important;\n            text-decoration: none;\n            padding: 10px 20px;\n            border-radius: 20px;\n            font-weight: 600;\n            transition: all 0.3s ease;\n            box-shadow: 0 4px 15px rgba(42, 82, 152, 0.3);\n            font-size: 14px;\n        }\n        \n        .action-btn:hover {\n            color: white !important;\n            transform: translateY(-2px);\n            box-shadow: 0 6px 20px rgba(42, 82, 152, 0.4);\n        }\n        \n        .no-pressure-section {\n            background: #f1f8e9;\n            border: 1px solid #c8e6c9;\n            border-radius: 10px;\n            padding: 20px;\n            margin-bottom: 25px;\n            text-align: center;\n        }\n        \n        .no-pressure-title {\n            color: #2e7d32;\n            font-weight: bold;\n            margin-bottom: 10px;\n            font-size: 16px;\n        }\n        \n        .no-pressure-text {\n            color: #388e3c;\n            font-size: 15px;\n            line-height: 1.6;\n        }\n        \n        .closing-section {\n            text-align: center;\n            margin-bottom: 20px;\n        }\n        \n        .closing-text {\n            font-size: 16px;\n            color: #666;\n            margin-bottom: 15px;\n        }\n        \n        .signature {\n            font-size: 16px;\n            color: #2a5298;\n            font-weight: 600;\n        }\n        \n        .postscript {\n            background: #f8f9ff;\n            border-top: 2px solid #2a5298;\n            padding: 20px;\n            margin-top: 20px;\n            font-style: italic;\n        }\n        \n        .ps-label {\n            font-weight: bold;\n            color: #1e3c72;\n            margin-bottom: 5px;\n        }\n        \n        .phone-number {\n            color: #2a5298;\n            font-weight: bold;\n            font-size: 18px;\n        }\n        \n        .footer {\n            background: #1e3c72;\n            color: white;\n            text-align: center;\n            padding: 25px;\n            font-size: 14px;\n        }\n        \n        /* Mobile responsiveness */\n        @media (max-width: 600px) {\n            .email-container {\n                margin: 10px;\n                border-radius: 8px;\n            }\n            \n            .header, .content {\n                padding: 20px;\n            }\n            \n            .action-buttons {\n                flex-direction: column;\n                align-items: center;\n            }\n            \n            .action-item {\n                min-width: auto;\n                width: 100%;\n                max-width: 280px;\n            }\n            \n            .logo {\n                font-size: 24px;\n            }\n        }\n    </style>\n</head>\n<body>\n    <div class=\"email-container\">\n        <!-- Header -->\n        <div class=\"header\">\n            <div class=\"logo\">BIMMER PLACE</div>\n            <div class=\"tagline\">Premium BMW Service & Expertise</div>\n        </div>\n        \n        <!-- Main Content -->\n        <div class=\"content\">\n            <div class=\"greeting\">\n                Hi {{ $json['Full Name'] }},\n            </div>\n            \n            <div class=\"intro\">\n                This is my last personal follow-up about your BMW service request. I don't want to overwhelm your inbox, but I also don't want you to miss out on getting your BMW the care it deserves.\n            </div>\n            \n            <div class=\"still-interested\">\n                <div class=\"interested-title\">If you're still interested:</div>\n                <div class=\"action-buttons\">\n                    <div class=\"action-item\">\n                        <span class=\"action-icon\">🔧</span>\n                        <a href=\"https://calendly.com/bimmerplacellc/30min\" class=\"action-btn\">Book Service</a>\n                    </div>\n                    \n                    <div class=\"action-item\">\n                        <span class=\"action-icon\">📞</span>\n                        <a href=\"https://calendly.com/bimmerplacellc/new-meeting\" class=\"action-btn\">Free Consultation</a>\n                    </div>\n                </div>\n            </div>\n            \n            <div class=\"no-pressure-section\">\n                <div class=\"no-pressure-title\">No Pressure at All</div>\n                <div class=\"no-pressure-text\">\n                    If now isn't the right time, no worries! You'll receive helpful BMW maintenance tips and occasional service reminders, but no more sales follow-ups.\n                </div>\n            </div>\n            \n            <div class=\"closing-section\">\n                <div class=\"closing-text\">Take care,</div>\n                <div class=\"signature\">The Bimmer Place Team</div>\n            </div>\n            \n            <div class=\"postscript\">\n                <div class=\"ps-label\">P.S.</div>\n                <div>You can always reach out when you're ready at <span class=\"phone-number\">(954) 708-5073</span></div>\n            </div>\n        </div>\n        \n        <!-- Footer -->\n        <div class=\"footer\">\n            © 2025 Bimmer Place LLC | Premium BMW Service | Oakland Park, FL\n        </div>\n    </div>\n</body>\n</html>",
+        "options": {}
+      },
+      "id": "afa41d83-c8e6-4a80-a6ef-7a57093b8f7f",
+      "name": "Send Final Follow-up1",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2,
+      "position": [
+        704,
+        -32
+      ],
+      "webhookId": "c13e540a-8a4f-4b71-a9c2-f9e6ed525167",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "AIqiPirsk2ufKXvQ",
+          "name": "Gmail Bimmer Palace"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "replied-check-1",
+              "leftValue": "={{ $json.Replied }}",
+              "rightValue": "YES",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "e21a2331-8e03-4e53-bfd7-322581b05379",
+      "name": "If Not Replied 5",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -1312,
+        -32
+      ]
+    },
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "Full Name"
+            },
+            {
+              "name": "Service"
+            },
+            {
+              "name": "Email",
+              "type": "any"
+            },
+            {
+              "name": "Phone Numbers",
+              "type": "any"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -2208,
+        -32
+      ],
+      "id": "a008f377-e708-45b3-9f67-12b585748fd9",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.Email }}",
+        "subject": "=Thanks for your interest in our BMW services - Next Steps",
+        "message": "=<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>BMW Service Follow-up - Bimmer Place</title>\n    <style>\n        * {\n            margin: 0;\n            padding: 0;\n            box-sizing: border-box;\n        }\n        \n        body {\n            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;\n            line-height: 1.6;\n            color: #333;\n            background-color: #f4f4f4;\n        }\n        \n        .email-container {\n            max-width: 600px;\n            margin: 20px auto;\n            background: white;\n            border-radius: 12px;\n            overflow: hidden;\n            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);\n        }\n        \n        .header {\n            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);\n            color: white;\n            padding: 30px 25px;\n            text-align: center;\n        }\n        \n        .logo {\n            font-size: 28px;\n            font-weight: bold;\n            margin-bottom: 10px;\n            letter-spacing: 1px;\n        }\n        \n        .tagline {\n            font-size: 14px;\n            opacity: 0.9;\n        }\n        \n        .content {\n            padding: 30px 25px;\n        }\n        \n        .greeting {\n            font-size: 18px;\n            margin-bottom: 20px;\n            color: #2a5298;\n        }\n        \n        .intro {\n            margin-bottom: 25px;\n            font-size: 16px;\n            line-height: 1.7;\n        }\n        \n        .service-highlight {\n            background: #f8f9ff;\n            padding: 15px;\n            border-left: 4px solid #2a5298;\n            margin-bottom: 25px;\n            border-radius: 0 8px 8px 0;\n        }\n        \n        .next-steps {\n            margin-bottom: 30px;\n        }\n        \n        .next-steps h3 {\n            color: #1e3c72;\n            margin-bottom: 20px;\n            font-size: 18px;\n        }\n        \n        .action-item {\n            background: white;\n            border: 2px solid #e8ecf7;\n            border-radius: 10px;\n            padding: 20px;\n            margin-bottom: 15px;\n            transition: all 0.3s ease;\n        }\n        \n        .action-item:hover {\n            border-color: #2a5298;\n            transform: translateY(-2px);\n            box-shadow: 0 4px 15px rgba(42, 82, 152, 0.1);\n        }\n        \n        .action-icon {\n            font-size: 24px;\n            margin-bottom: 10px;\n            display: block;\n        }\n        \n        .action-title {\n            font-weight: bold;\n            color: #1e3c72;\n            margin-bottom: 8px;\n            font-size: 16px;\n        }\n        \n        .action-btn {\n            display: inline-block;\n            background: linear-gradient(135deg, #2a5298 0%, #1e3c72 100%);\n            color: white !important;\n            text-decoration: none;\n            padding: 12px 24px;\n            border-radius: 25px;\n            margin-top: 10px;\n            font-weight: 600;\n            transition: all 0.3s ease;\n            box-shadow: 0 4px 15px rgba(42, 82, 152, 0.3);\n        }\n        \n        .action-btn:hover {\n            color: white !important;\n            transform: translateY(-2px);\n            box-shadow: 0 6px 20px rgba(42, 82, 152, 0.4);\n        }\n        \n        .location-section {\n            background: #f8f9ff;\n            padding: 25px;\n            border-radius: 10px;\n            margin-bottom: 25px;\n            text-align: center;\n        }\n        \n        .location-title {\n            color: #1e3c72;\n            font-weight: bold;\n            margin-bottom: 15px;\n            font-size: 18px;\n        }\n        \n        .address {\n            font-size: 16px;\n            line-height: 1.6;\n            color: #555;\n        }\n        \n        .contact-section {\n            text-align: center;\n            padding: 20px 0;\n            border-top: 1px solid #eee;\n        }\n        \n        .footer {\n            background: #1e3c72;\n            color: white;\n            text-align: center;\n            padding: 25px;\n            font-size: 14px;\n        }\n        \n        .signature {\n            margin-top: 20px;\n            font-style: italic;\n            color: #666;\n        }\n        \n        /* Mobile responsiveness */\n        @media (max-width: 600px) {\n            .email-container {\n                margin: 10px;\n                border-radius: 8px;\n            }\n            \n            .header, .content {\n                padding: 20px;\n            }\n            \n            .action-item {\n                padding: 15px;\n            }\n            \n            .logo {\n                font-size: 24px;\n            }\n        }\n    </style>\n</head>\n<body>\n    <div class=\"email-container\">\n        <!-- Header -->\n        <div class=\"header\">\n            <div class=\"logo\">BIMMER PLACE</div>\n            <div class=\"tagline\">Premium BMW Service & Expertise</div>\n        </div>\n        \n        <!-- Main Content -->\n        <div class=\"content\">\n            <div class=\"greeting\">\n                Hi {{ $json['Full Name'] }},\n            </div>\n            \n            <div class=\"intro\">\n                Thank you for your interest in our BMW services! We received your request and we're excited to help you get your BMW running at its best.\n            </div>\n            \n            <div class=\"service-highlight\">\n                <strong>Requested Service:</strong> {{ $json.Service }}\n            </div>\n            \n            <div class=\"next-steps\">\n                <h3>Here are your next steps:</h3>\n                \n                <div class=\"action-item\">\n                    <div class=\"action-icon\">🔧</div>\n                    <div class=\"action-title\">Ready to bring your car in?</div>\n                    <div>Book your service appointment and get your BMW back to peak performance.</div>\n                    <a href=\"https://calendly.com/bimmerplacellc/30min\" class=\"action-btn\">Book Appointment</a>\n                </div>\n                \n                <div class=\"action-item\">\n                    <div class=\"action-icon\">📞</div>\n                    <div class=\"action-title\">Want to speak with our BMW specialist first?</div>\n                    <div>Schedule a consultation call to discuss your vehicle's needs in detail.</div>\n                    <a href=\"https://calendly.com/bimmerplacellc/new-meeting\" class=\"action-btn\">Schedule Consultation</a>\n                </div>\n            </div>\n            \n            <div class=\"location-section\">\n                <div class=\"location-title\">🏪 Our Shop Location</div>\n                <div class=\"address\">\n                    4630 NW 8th Terrace<br>\n                    Oakland Park, FL 33309\n                </div>\n            </div>\n            \n            <div class=\"contact-section\">\n                <strong>Questions?</strong> Just reply to this email \n            </div>\n            \n            <div class=\"signature\">\n                Best regards,<br>\n                <strong>The Bimmer Place Team</strong>\n            </div>\n        </div>\n        \n        <!-- Footer -->\n        <div class=\"footer\">\n            © 2025 Bimmer Place LLC | Premium BMW Service | Oakland Park, FL\n        </div>\n    </div>\n</body>\n</html>",
+        "options": {}
+      },
+      "id": "6107869f-0299-4b73-bdac-7650d8c9473b",
+      "name": "Send Welcome Email",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2,
+      "position": [
+        -1984,
+        -32
+      ],
+      "webhookId": "8cf031c9-8545-4304-b4c6-440274083ff8",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "AIqiPirsk2ufKXvQ",
+          "name": "Gmail Bimmer Palace"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "unit": "days"
+      },
+      "id": "548015dc-d18d-4eaa-9d7c-76a635f6131e",
+      "name": "Wait 1 Day",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1,
+      "position": [
+        -1760,
+        -32
+      ],
+      "webhookId": "fd4af853-7e9e-4397-b5a2-30216ed43f21"
+    },
+    {
+      "parameters": {
+        "content": "### Email follow up \n ",
+        "height": 896,
+        "width": 3872
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -2960,
+        -416
+      ],
+      "id": "85600bcc-d9b5-4838-84c0-0aa3a3c5f723",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "Workflow 2: Email Nurture Sequence\nPurpose: 4-email drip campaign with intelligent reply checking\nEmail Sequence:\n\nWelcome Email (Immediate): Service confirmation + booking links\nFollow-up #1 (Day 2): \"Still need service?\" with call-to-action\nFollow-up #2 (Day 5): FAQ format addressing common concerns\nFinal Follow-up (Day 8): Soft close with no-pressure messaging\n\nSmart Logic:\n\nChecks Google Sheets for \"Replied: YES\" before each email\nStops sequence if customer has responded\nProfessional HTML templates with BMW branding\nMobile-responsive design",
+        "height": 432,
+        "width": 528,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -2848,
+        -192
+      ],
+      "id": "8bb7f628-d534-4f3d-bf42-b1a5c0848439",
+      "name": "Sticky Note1"
+    }
+  ],
+  "pinData": {
+    "When Executed by Another Workflow": [
+      {
+        "json": {
+          "Email": "lipox@mailinator.com",
+          "Full Name": "Genevieve Pratt",
+          "Phone Numbers": "+15435",
+          "Model And Year": "1971",
+          "How Soon do you need service": "",
+          "Service": "Nostrum veritatis in",
+          "Timestamp": "2025-08-05T23:08:26.898Z"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Check Replied Status ": {
+      "main": [
+        [
+          {
+            "node": "If Not Replied 5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Follow-up ": {
+      "main": [
+        [
+          {
+            "node": "Wait 2 Days1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait 2 Days1": {
+      "main": [
+        [
+          {
+            "node": "Check Replied Status 4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Replied Status 4": {
+      "main": [
+        [
+          {
+            "node": "If Not Replied ",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If Not Replied ": {
+      "main": [
+        [
+          {
+            "node": "Send Follow-up 3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Follow-up 3": {
+      "main": [
+        [
+          {
+            "node": "Wait 3 Days1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait 3 Days1": {
+      "main": [
+        [
+          {
+            "node": "Check Replied Status 5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Replied Status 5": {
+      "main": [
+        [
+          {
+            "node": "If Not Replied 4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If Not Replied 4": {
+      "main": [
+        [
+          {
+            "node": "Send Final Follow-up1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If Not Replied 5": {
+      "main": [
+        [
+          {
+            "node": "Send Follow-up ",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Send Welcome Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Welcome Email": {
+      "main": [
+        [
+          {
+            "node": "Wait 1 Day",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait 1 Day": {
+      "main": [
+        [
+          {
+            "node": "Check Replied Status ",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "f85510fd-aa7e-4b18-91da-116bfc7b502e",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "fb8b211dfa388d0801350a6c5b17c205d694932f4fa50fa723c269df3e6279eb"
+  },
+  "id": "DSzqn90hBU2wPvSq",
+  "tags": []
+}
