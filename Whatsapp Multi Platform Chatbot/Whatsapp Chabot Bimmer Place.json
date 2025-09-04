@@ -1,0 +1,633 @@
+{
+  "name": "Whatsapp Chabot Bimmer Place",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "webhook-whatsapp",
+        "options": {}
+      },
+      "id": "5bfaa554-a677-4800-9544-e88d08f9d626",
+      "name": "WhatsApp Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        -208,
+        80
+      ],
+      "webhookId": "your-webhook-id"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.type }}",
+              "rightValue": "message",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "30924ff8-c574-43c7-9240-ac87886b4f3b",
+      "name": "Filter Messages",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        32,
+        -16
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://api.wasender.com/send-message",
+        "authentication": "headerAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{ $vars.WASENDER_API_TOKEN }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "to",
+              "value": "={{ $('Extract Message Data').item.json.user_phone }}"
+            },
+            {
+              "name": "message",
+              "value": "={{ $json.response }}"
+            },
+            {
+              "name": "type",
+              "value": "text"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "35c47586-d52a-4793-b3eb-8c2d9564c3a2",
+      "name": "Send WhatsApp Response",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1920,
+        448
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO user_conversations (phone_number, user_message, bot_response, conversation_history, created_at) VALUES ($1, $2, $3, $4, NOW()) ON CONFLICT (phone_number) DO UPDATE SET user_message = $2, bot_response = $3, conversation_history = CONCAT(COALESCE(user_conversations.conversation_history, ''), '\\nUser: ', $2, '\\nBot: ', $3), updated_at = NOW()",
+        "options": {}
+      },
+      "id": "daab5970-b9b8-45a7-bd2e-e141455e1f78",
+      "name": "Save Conversation",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        2064,
+        448
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $('Extract Message Data').item.json.user_message.toLowerCase() }}",
+              "rightValue": "appointment",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "id": "e32db792-f0ec-4806-b899-20e3659389ad",
+      "name": "Check Appointment Intent",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        704,
+        176
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://api.wasender.com/send-message",
+        "authentication": "headerAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{ $vars.WASENDER_API_TOKEN }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "to",
+              "value": "={{ $('Extract Message Data').item.json.user_phone }}"
+            },
+            {
+              "name": "message",
+              "value": "I'd be happy to help you schedule an appointment! 📅\n\nPlease provide:\n1️⃣ Preferred date (DD/MM/YYYY)\n2️⃣ Preferred time (Morning/Afternoon)\n3️⃣ Service type (Maintenance/Repair/Inspection)\n4️⃣ Your BMW model and year\n\nOr call us directly at +1-800-BMW-SERVICE for immediate assistance."
+            },
+            {
+              "name": "type",
+              "value": "text"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "21505ae2-f7b0-495e-9ef4-acd7b83c018e",
+      "name": "Send Appointment Response",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1024,
+        352
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $('Extract Message Data').item.json.user_message.toLowerCase() }}",
+              "rightValue": "hours",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "leftValue": "={{ $('Extract Message Data').item.json.user_message.toLowerCase() }}",
+              "rightValue": "location",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "id": "6ad141d0-5154-4f9d-9bce-ccefdb103800",
+      "name": "Check Location/Hours Intent",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        592,
+        528
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://api.wasender.com/send-message",
+        "authentication": "headerAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{ $vars.WASENDER_API_TOKEN }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "to",
+              "value": "={{ $('Extract Message Data').item.json.user_phone }}"
+            },
+            {
+              "name": "message",
+              "value": "📍 BMW Service Center Location & Hours:\n\n🏢 Address: 123 BMW Boulevard, City, State 12345\n\n⏰ Service Hours:\nMonday - Friday: 7:00 AM - 6:00 PM\nSaturday: 8:00 AM - 4:00 PM\nSunday: Closed\n\n📞 Phone: +1-800-BMW-SERVICE\n💻 Online: www.bmwservicecenter.com\n\nNeed directions? Share your location and I'll help you navigate here! 🗺️"
+            },
+            {
+              "name": "type",
+              "value": "text"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "b56e9c6f-c0fc-4bd3-ac3f-a35fbce02ef6",
+      "name": "Send Location/Hours Response",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1040,
+        608
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $('Extract Message Data').item.json.user_message.toLowerCase() }}",
+              "rightValue": "hi",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            },
+            {
+              "leftValue": "={{ $('Extract Message Data').item.json.user_message.toLowerCase() }}",
+              "rightValue": "hello",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            },
+            {
+              "leftValue": "={{ $('Extract Message Data').item.json.user_message.toLowerCase() }}",
+              "rightValue": "start",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "id": "3a703969-e53e-46de-975f-60e8bbf2459a",
+      "name": "Check Greeting Intent",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        688,
+        784
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://api.wasender.com/send-message",
+        "authentication": "headerAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{ $vars.WASENDER_API_TOKEN }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "to",
+              "value": "={{ $('Extract Message Data').item.json.user_phone }}"
+            },
+            {
+              "name": "message",
+              "value": "Hello! 👋 Welcome to BMW Service Center!\n\nI'm your virtual service assistant. I can help you with:\n\n🔧 Service appointments\n🕒 Hours & location\n⚙️ Maintenance information\n🚗 BMW service packages\n📋 Service history\n💰 Parts & pricing\n\nHow can I assist you with your BMW today?"
+            },
+            {
+              "name": "type",
+              "value": "text"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "b6a1d849-ee71-4e78-8925-f07894419153",
+      "name": "Send Greeting Response",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1056,
+        864
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        176,
+        480
+      ],
+      "id": "aedb6109-066d-4922-a63a-3da653d0bb18",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -48,
+        688
+      ],
+      "id": "4a5ca51f-ef2c-4670-9d72-6318fd8495e9",
+      "name": "Google Gemini Chat Model"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
+      "typeVersion": 1.3,
+      "position": [
+        192,
+        688
+      ],
+      "id": "0c75f39d-b80c-4857-8f9e-3e99a428b69a",
+      "name": "Postgres Chat Memory"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "5191f50b-bc5c-4544-a182-68f440c699c3"
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        1376,
+        464
+      ],
+      "id": "771d0ffe-47c3-435d-a6ef-446129fc6055",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "messages": {
+          "values": [
+            {}
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [
+        1584,
+        464
+      ],
+      "id": "9ffaa4b9-116b-49e0-ae4f-d246a34ddc74",
+      "name": "Message a model"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "WhatsApp Webhook": {
+      "main": [
+        [
+          {
+            "node": "Filter Messages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter Messages": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send WhatsApp Response": {
+      "main": [
+        [
+          {
+            "node": "Save Conversation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Appointment Intent": {
+      "main": [
+        [
+          {
+            "node": "Send Appointment Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Location/Hours Intent": {
+      "main": [
+        [
+          {
+            "node": "Send Location/Hours Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Greeting Intent": {
+      "main": [
+        [
+          {
+            "node": "Send Greeting Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Check Location/Hours Intent",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Check Appointment Intent",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Check Greeting Intent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres Chat Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Appointment Response": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Location/Hours Response": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Greeting Response": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Send WhatsApp Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "562abe3a-19b8-41ae-9e5b-d8c3d2613f80",
+  "meta": {
+    "instanceId": "c94fc7b78f8f9b86b4b5293984b282593860a2809deaafedbeb6d596b29d76b7"
+  },
+  "id": "L8q2XHssdGWd3FcJ",
+  "tags": []
+}
