@@ -3,14 +3,10 @@ import { createClient } from '@supabase/supabase-js';
 
 // Initialize OpenAI
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY || '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',
-});
-
+  apiKey: process.env.OPENAI_API_KEY 
 // Initialize Supabase client with fallback values
-const supabaseUrl = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL || "https://gymsiiymqometjnfqsxy.supabase.co";
-const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd5bXNpaXltcW9tZXRqbmZxc3h5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAwMTgzOTQsImV4cCI6MjA2NTU5NDM5NH0.SLJZP8Il9Y9u_nEkUwoSSIMHj4ayfQZ1EYqozQcqtpI";
-
-const supabase = createClient(supabaseUrl, supabaseKey);
+const supabaseUrl = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL ||;
+const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY || ;
 
 // Fallback business knowledge base
 const businessKnowledge = {
