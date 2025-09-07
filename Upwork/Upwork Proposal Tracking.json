@@ -1,0 +1,454 @@
+{
+  "name": "Upwork Proposal Tracking",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -144,
+        -128
+      ],
+      "id": "886343c3-d85a-47e2-9cd2-c148334a1f3b",
+      "name": "Telegram Trigger",
+      "webhookId": "3e0c3bd2-6c0d-45d6-8fda-fc65e2811604",
+      "credentials": {
+        "telegramApi": {
+          "id": "AtsisrEK1mketfAi",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.message.text }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "notEmpty",
+                      "singleValue": true
+                    },
+                    "id": "b74690f7-c3ad-4cf8-9091-3d5dc0c0db78"
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        160,
+        -208
+      ],
+      "id": "70329004-59e7-45e4-ac62-00ea8cae91ca",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are an expert Upwork proposal data extraction agent. Your job is to extract structured information from Upwork job application data and automatically update a Google Sheets tracking system.\n\nINCOMING DATA TO PROCESS:\nMessage Text: {{ $json.message.text }}\nMessage Date: {{ $json.message.date }}\nMessage URL: {{ $json.message.link_preview_options?.url || 'No URL provided' }}\n\nROLE: Extract key information from the pasted Upwork proposal data above and log it to Google Sheets.\n\nINSTRUCTIONS:\n1. Analyze the message text containing Upwork proposal data\n2. Extract all relevant information using the specified field mappings\n3. Use the Google Sheets tool to append the data to the tracking sheet\n4. Confirm successful logging with a summary message\n\nEXTRACTION REQUIREMENTS:\n- Parse job titles, project details, client information, and proposal metrics from the message text\n- Handle missing data gracefully (use \"Not Specified\" for missing fields)\n- Extract connects usage if mentioned by user (look for \"Connects Used: X\", \"total connects: X\", \"connects: X\", or any variation)\n- Extract BD scoring and remarks if provided (look for \"Score: X\" and \"BD Remarks: [text]\")\n- Extract budget/pricing information from job posting (hourly range, fixed budget, your proposed rate)\n- Identify project type (Hourly/Fixed) and duration from job posting details\n- Get complete cover letter preview \n- Extract required skills and technology stack from skills section\n\nFIELD MAPPINGS FOR GOOGLE SHEETS:\n- Date: Extract from \"Posted [date]\" in message or use current date (YYYY-MM-DD format)\n- Job_Link: Extract from URL in message or use \"Manual Entry Required\"\n- Project_Title: Main job title from the posting\n- Stack: Technology/skills mentioned (React, Python, AI, etc.)\n- Connects: Look for \"Connects Used: X\" in message or use \"Not Specified\"\n- Viewed: Always set to \"No\" (default status)\n- Response: Always set to \"No\" (default status)\n- Project_Type: \"Hourly\" or \"Fixed\" based on job posting type\n- Project_Length: Duration from job details (\"Less than 1 month\", \"1-3 months\", etc.)\n- Cover_Letter_Preview: complete cover letter preview \n- Project_length: Same as Project_Length (detailed timeline)\n- Skills: Comma-separated skills from \"Skills and expertise\" section\n- Score: Extract from \"Score: X\" where X is 1-5, or \"Not Specified\"\n- Remarks: Extract from \"BD Remarks: [text]\" or \"Not Specified\"\n- Client_Budget: Extract hourly range (\"$12.00 - $18.00\") or fixed budget, or \"Not Specified\"\n- Your_Rate: Extract your proposed rate (\"$40.00/hr\" or fixed amount)\n- Rate_Difference: Calculate difference between your rate and client's budget (if both available)\n\nDATA VALIDATION:\n- Ensure Project_Title is extracted and not empty\n- Validate date formats and convert to YYYY-MM-DD\n- Clean and standardize text fields (trim whitespace, proper capitalization)\n- For missing Connects, prompt user to specify in response\n\nRESPONSE FORMAT:\nAfter successfully logging data, provide a confirmation message like this:\n\n\"Proposal Successfully Logged!\n\nProject: [Project_Title]\nStack: [Stack]\nConnects Used: [Connects]\nDate: [Date]\nDuration: [Project_Length]\nType: [Project_Type]\nBD Score: [Score]\nBD Remarks: [Remarks]\nClient Budget: [Client_Budget]\nYour Rate: [Your_Rate]\nRate Analysis: [Rate_Difference]\nJob Link: [Job_Link]\n\nData added to your tracking sheet. Update 'Viewed' and 'Response' columns when client responds.\"\n\nIf connects, score, BD remarks, or budget information were not specified, add: \"Note: Missing data marked as 'Not Specified' - you can update manually in the sheet.\"",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        448,
+        -160
+      ],
+      "id": "22faae43-1033-4944-8cf8-c4165e08dae7",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        288,
+        208
+      ],
+      "id": "93f2503b-6bb5-4bd3-a9e1-2359fc069132",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "wXL6JuUpQ3v2JR2p",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Extract Upwork proposal data and append to Google Sheets tracking system\n",
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1lUOL4T50CmPEB4K4N2dE1OZEwDUok897QoEdoE4mpPQ",
+          "mode": "list",
+          "cachedResultName": "BD",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lUOL4T50CmPEB4K4N2dE1OZEwDUok897QoEdoE4mpPQ/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lUOL4T50CmPEB4K4N2dE1OZEwDUok897QoEdoE4mpPQ/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Date": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Date', ``, 'string') }}",
+            "Job Link": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Job_Link', ``, 'string') }}",
+            "Project Title": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Project_Title', ``, 'string') }}",
+            "Stack": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Stack', ``, 'string') }}",
+            "Connects": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Connects', ``, 'string') }}",
+            "Viewed": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Viewed', ``, 'string') }}",
+            "Response": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Response', ``, 'string') }}",
+            "Project Type": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Project_Type', ``, 'string') }}",
+            "Project Length": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Project_Length', ``, 'string') }}",
+            "Cover Letter Preview": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Cover_Letter_Preview', ``, 'string') }}",
+            "Skills": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Skills', ``, 'string') }}",
+            "Score by BD": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Score_by_BD', ``, 'string') }}",
+            "BD Remarks": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('BD_Remarks', ``, 'string') }}",
+            "Budget": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Budget', ``, 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Job Link",
+              "displayName": "Job Link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Project Title",
+              "displayName": "Project Title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Stack",
+              "displayName": "Stack",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Connects",
+              "displayName": "Connects",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Budget",
+              "displayName": "Budget",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Viewed",
+              "displayName": "Viewed",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Response",
+              "displayName": "Response",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Project Type",
+              "displayName": "Project Type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Project Length",
+              "displayName": "Project Length",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Cover Letter Preview",
+              "displayName": "Cover Letter Preview",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Skills",
+              "displayName": "Skills",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Lead to Call",
+              "displayName": "Lead to Call",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Closed",
+              "displayName": "Closed",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Score by BD",
+              "displayName": "Score by BD",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "BD Remarks",
+              "displayName": "BD Remarks",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Score by Dev",
+              "displayName": "Score by Dev",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Dev Remarks",
+              "displayName": "Dev Remarks",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        576,
+        208
+      ],
+      "id": "d336b293-f2a6-4bc5-83f5-dfd904dda4d2",
+      "name": "Append row in sheet in Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "pGbydswpVP4cGxwY",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "={{ $json.output }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        832,
+        96
+      ],
+      "id": "338c720c-eae2-455c-af60-0c9edfdb20e4",
+      "name": "Send a text message",
+      "webhookId": "3b48abe7-6d9f-4bb1-93d6-addbb7c0bea7",
+      "credentials": {
+        "telegramApi": {
+          "id": "AtsisrEK1mketfAi",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C09D1NLHY8J",
+          "mode": "list",
+          "cachedResultName": "upwork-leads"
+        },
+        "text": "={{ $json.output }}",
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        848,
+        -192
+      ],
+      "id": "4b4d17e2-caff-4a0f-8364-60ef42126534",
+      "name": "Send a message",
+      "webhookId": "cf359fda-5f5a-4e9b-8190-6358d31d59e0",
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "dVd2ByLgfFW6AVML",
+          "name": "Slack account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet in Google Sheets": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "25f518e3-4098-4690-a5a6-2ba97ac24884",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "b282b647ba2ffad28abf16e64f235c99d093d07eb5ad462e233c8361107e2b9d"
+  },
+  "id": "98X42EJYUicrj9zx",
+  "tags": []
+}
